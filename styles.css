@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+#canvas {
+    border: 2px solid #333;
+    width: 600px;
+    height: 400px;
+    background-color: #fff;
+    position: relative;
+}
+
+.tools {
+    margin-left: 20px;
+}
+
+.tool {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tool:hover {
+    background-color: #555;
+}
