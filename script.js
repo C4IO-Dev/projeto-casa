@@ -6,30 +6,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const windowTool = document.getElementById('windowTool');
     let selectedTool = null;
 
+    let offsetX, offsetY;
+
     // Adicionar funcionalidades para arrastar os botões
-    wallTool.addEventListener('mousedown', function(event) {
-        selectedTool = 'wallTool';
-        startDrag(event);
-    });
-
-    doorTool.addEventListener('mousedown', function(event) {
-        selectedTool = 'doorTool';
-        startDrag(event);
-    });
-
-    windowTool.addEventListener('mousedown', function(event) {
-        selectedTool = 'windowTool';
-        startDrag(event);
-    });
+    wallTool.addEventListener('mousedown', startDrag);
+    doorTool.addEventListener('mousedown', startDrag);
+    windowTool.addEventListener('mousedown', startDrag);
 
     // Função para iniciar o arrasto
     function startDrag(event) {
-        const offsetX = event.clientX - event.target.getBoundingClientRect().left;
-        const offsetY = event.clientY - event.target.getBoundingClientRect().top;
+        selectedTool = event.target.id;
+        offsetX = event.clientX - event.target.getBoundingClientRect().left;
+        offsetY = event.clientY - event.target.getBoundingClientRect().top;
 
         function moveElement(event) {
-            const x = event.clientX - canvas.offsetLeft - offsetX;
-            const y = event.clientY - canvas.offsetTop - offsetY;
+            const x = event.clientX - offsetX;
+            const y = event.clientY - offsetY;
             event.target.style.left = x + 'px';
             event.target.style.top = y + 'px';
         }
@@ -43,12 +35,14 @@ document.addEventListener("DOMContentLoaded", function() {
             if (event.clientX >= rect.left && event.clientX <= rect.right && 
                 event.clientY >= rect.top && event.clientY <= rect.bottom) {
                 // Desenhar o elemento correspondente ao botão solto
+                const x = event.clientX - canvas.offsetLeft;
+                const y = event.clientY - canvas.offsetTop;
                 if (selectedTool === 'wallTool') {
-                    drawWall(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                    drawWall(x, y);
                 } else if (selectedTool === 'doorTool') {
-                    addDoor(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                    addDoor(x, y);
                 } else if (selectedTool === 'windowTool') {
-                    addWindow(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                    addWindow(x, y);
                 }
             }
         }
