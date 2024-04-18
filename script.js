@@ -1,58 +1,77 @@
 document.addEventListener("DOMContentLoaded", function() {
     const canvas = document.getElementById('canvas');
-    let drawing = false;
-    let selectedTool = 'wallTool'; // Ferramenta padrão é a de parede
+    const ctx = canvas.getContext('2d');
+    const wallTool = document.getElementById('wallTool');
+    const doorTool = document.getElementById('doorTool');
+    const windowTool = document.getElementById('windowTool');
+    let selectedTool = null;
 
-    canvas.addEventListener('mousedown', function(event) {
-        drawing = true;
-        if (selectedTool === 'wallTool') {
-            drawWall(event);
-        } else if (selectedTool === 'doorTool') {
-            addDoor(event);
-        } else if (selectedTool === 'windowTool') {
-            addWindow(event);
+    // Adicionar funcionalidades para arrastar os botões
+    wallTool.addEventListener('mousedown', function(event) {
+        selectedTool = 'wallTool';
+        startDrag(event);
+    });
+
+    doorTool.addEventListener('mousedown', function(event) {
+        selectedTool = 'doorTool';
+        startDrag(event);
+    });
+
+    windowTool.addEventListener('mousedown', function(event) {
+        selectedTool = 'windowTool';
+        startDrag(event);
+    });
+
+    // Função para iniciar o arrasto
+    function startDrag(event) {
+        const offsetX = event.clientX - event.target.getBoundingClientRect().left;
+        const offsetY = event.clientY - event.target.getBoundingClientRect().top;
+
+        function moveElement(event) {
+            const x = event.clientX - canvas.offsetLeft - offsetX;
+            const y = event.clientY - canvas.offsetTop - offsetY;
+            event.target.style.left = x + 'px';
+            event.target.style.top = y + 'px';
         }
-    });
 
-    canvas.addEventListener('mouseup', function() {
-        drawing = false;
-    });
+        function releaseElement(event) {
+            document.removeEventListener('mousemove', moveElement);
+            document.removeEventListener('mouseup', releaseElement);
 
-    canvas.addEventListener('mousemove', function(event) {
-        if (drawing) {
-            if (selectedTool === 'wallTool') {
-                drawWall(event);
-            } else if (selectedTool === 'doorTool') {
-                // Adicionar funcionalidade para mover ou redimensionar a porta
-            } else if (selectedTool === 'windowTool') {
-                // Adicionar funcionalidade para mover ou redimensionar a janela
+            // Verificar se o botão foi solto dentro do canvas
+            const rect = canvas.getBoundingClientRect();
+            if (event.clientX >= rect.left && event.clientX <= rect.right && 
+                event.clientY >= rect.top && event.clientY <= rect.bottom) {
+                // Desenhar o elemento correspondente ao botão solto
+                if (selectedTool === 'wallTool') {
+                    drawWall(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                } else if (selectedTool === 'doorTool') {
+                    addDoor(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                } else if (selectedTool === 'windowTool') {
+                    addWindow(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                }
             }
         }
-    });
 
-    // Adicionar funcionalidades para trocar a ferramenta selecionada
-    document.getElementById('wallTool').addEventListener('click', function() {
-        selectedTool = 'wallTool';
-    });
-
-    document.getElementById('doorTool').addEventListener('click', function() {
-        selectedTool = 'doorTool';
-    });
-
-    document.getElementById('windowTool').addEventListener('click', function() {
-        selectedTool = 'windowTool';
-    });
-
-    function drawWall(event) {
-        // Adicionar lógica para desenhar uma parede
+        document.addEventListener('mousemove', moveElement);
+        document.addEventListener('mouseup', releaseElement);
     }
 
-    function addDoor(event) {
-        // Adicionar lógica para adicionar uma porta
+    function drawWall(x, y) {
+        // Lógica para desenhar uma parede
+        ctx.fillStyle = 'grey';
+        ctx.fillRect(x, y, 50, 10);
     }
 
-    function addWindow(event) {
-        // Adicionar lógica para adicionar uma janela
+    function addDoor(x, y) {
+        // Lógica para adicionar uma porta
+        ctx.fillStyle = 'brown';
+        ctx.fillRect(x, y, 20, 40);
+    }
+
+    function addWindow(x, y) {
+        // Lógica para adicionar uma janela
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(x, y, 30, 30);
     }
 });
-
